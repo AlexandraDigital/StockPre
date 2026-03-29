@@ -105,31 +105,64 @@ const STAT_INFO = {
   "Div Yield":  "Annual dividend as % of price. Free income just for holding the stock. 2\u20134% is typical for dividend stocks.",
 };
 
-// ─── GLOSSARY ─────────────────────────────────────────────────────────────────
-const GLOSSARY = [
-  { term: "Stock / Share", def: "A small piece of ownership in a company. If Apple has 1 billion shares and you own 1, you own 1 billionth of Apple.", example: "Buying 10 shares of AAPL at $180 costs $1,800 and gives you partial ownership of Apple." },
-  { term: "Ticker Symbol", def: "A short code that identifies a stock on an exchange. Usually 1\u20135 letters.", example: "AAPL = Apple, TSLA = Tesla, NVDA = NVIDIA, MSFT = Microsoft" },
-  { term: "Price", def: "What one share costs right now. It changes constantly during market hours based on supply and demand.", example: "If AAPL is $185.50, that's the price the last buyer paid for one Apple share." },
-  { term: "Change & Change %", def: "How much the price moved vs. yesterday's close. Green = up (profit), Red = down (loss).", example: "+$2.50 (+1.37%) means the stock gained $2.50 per share today \u2014 1.37% more than yesterday." },
-  { term: "Open", def: "The first traded price when the market opened at 9:30 AM ET.", example: "If Open is $183 and current price is $185, the stock is up $2 since the market opened." },
-  { term: "Close / Prev Close", def: "The final traded price when the market closed at 4:00 PM ET the previous trading day. All daily change %s are calculated from this.", example: "Prev Close $182 + today's change +$3 = current price $185." },
-  { term: "High / Low", def: "The highest and lowest prices traded during the current trading session. Shows today's volatility range.", example: "High $187, Low $182 means the stock swung $5 in value today." },
-  { term: "Volume", def: "Total shares bought and sold today. High volume confirms the strength of a price move. Low volume suggests weak conviction.", example: "10M volume on a stock that normally trades 2M = major news or institutional buying/selling." },
-  { term: "Market Cap", def: "Total company value = Price \u00d7 Total Shares. Tells you the company's size category.", example: "Large Cap (>$10B) = stable giants like Apple. Small Cap (<$2B) = higher risk, higher potential growth." },
-  { term: "P/E Ratio", def: "Price-to-Earnings ratio. How much you're paying for each $1 of company profit. Lower can mean the stock is cheaper relative to earnings.", example: "P/E 25 = you pay $25 for every $1 the company earns. The S&P 500 average is ~20\u201325." },
-  { term: "EPS", def: "Earnings Per Share \u2014 the company's total profit divided by total shares outstanding. Measures profitability per share.", example: "EPS $6 means the company earned $6 in profit per share last year." },
-  { term: "52-Week High/Low", def: "The highest and lowest traded prices over the past 52 weeks. Key reference points traders watch closely.", example: "Stock near its 52W high = strong momentum. Near 52W low = potential value buy or danger sign." },
-  { term: "Beta", def: "Measures how much a stock moves relative to the S&P 500 market. Beta > 1 = more volatile than market. Beta < 1 = more stable.", example: "Beta 1.5: if S&P drops 10%, this stock typically drops 15%. Higher risk, higher potential reward." },
-  { term: "Dividend Yield", def: "Annual dividend payment expressed as a % of the current stock price. This is passive income you earn just for holding the stock.", example: "3% yield on a $100 stock = $3/year per share paid directly to you." },
-  { term: "Candlestick", def: "A chart bar showing Open, High, Low, Close for one time period. The body shows Open-to-Close movement. The wick shows the full High-to-Low range.", example: "Green candle = price went up that period. Red candle = price went down. Tall wicks = high volatility." },
-  { term: "Support Level", def: "A price where the stock tends to stop falling and bounce back up. Think of it as a floor the price respects.", example: "If AAPL bounced off $170 three times, $170 is a strong support level. Break below it = warning sign." },
-  { term: "Resistance Level", def: "A price where the stock tends to stop rising and pull back down. Think of it as a ceiling.", example: "If a stock failed to break $200 multiple times, $200 is resistance. Breaking above it = bullish breakout." },
-  { term: "Bull Market", def: "A market trending upward \u2014 broadly defined as a 20%+ rise from recent lows. Investors are optimistic.", example: "2009\u20132020 was the longest bull market in US history, driven by low interest rates and tech growth." },
-  { term: "Bear Market", def: "A market falling 20%+ from recent highs. Investors are pessimistic and selling.", example: "2022 was a bear market \u2014 the S&P 500 dropped ~25% due to rising interest rates and inflation." },
-  { term: "Moving Average (SMA)", def: "The average price over a set number of days (e.g., 50-day or 200-day MA). Smooths out noise to show the underlying trend.", example: "Price above 50-day MA = short-term uptrend. Price below 200-day MA = long-term downtrend." },
-  { term: "RSI (Relative Strength Index)", def: "A momentum indicator from 0\u2013100 that shows if a stock is overbought or oversold. Think of it as a 'temperature' for price momentum.", example: "RSI > 70 = potentially overbought (may pull back). RSI < 30 = potentially oversold (may bounce). RSI 50 = neutral." },
-  { term: "Pre-Market / After-Hours", def: "Trading that happens before the market opens (4\u20139:30 AM ET) or after it closes (4\u20138 PM ET). Less volume, more volatile, wider price swings.", example: "An earnings report drops at 5 PM \u2014 the stock could move 10% in after-hours before the next regular session." },
-  { term: "Market Order vs Limit Order", def: "Market order = buy/sell immediately at whatever the current price is. Limit order = only buy/sell at your specified price or better.", example: "AAPL at $185. Limit order at $180 = only buys if price drops to $180. Market order buys right now at $185." },
+// ─── LEARN DATA ─────────────────────────────────────────────────────────────
+const LEARN_BASICS = [
+  { id: "what-stock", q: "What is a stock?", a: "A stock is a tiny piece of ownership in a company. If a company is a pizza, a stock is one slice. When you buy Apple stock, you literally own a small piece of Apple Inc. If the company does well, your slice becomes more valuable!" },
+  { id: "what-price", q: "What does the stock price mean?", a: "The stock price is what people are willing to pay RIGHT NOW for one share. It changes every second during market hours because buyers and sellers are constantly agreeing on new prices. Think of it like an auction that never stops." },
+  { id: "bull-bear", q: "What are Bull and Bear markets?", a: "\ud83d\udc02 Bull Market = prices going UP (bulls charge upward with their horns)\n\ud83d\udc3b Bear Market = prices going DOWN (bears swipe downward with their paws)\n\nA bull market means people are optimistic and buying. A bear market means people are worried and selling." },
+  { id: "what-volume", q: "What is Volume?", a: "Volume is how many shares were traded (bought + sold) in a time period. High volume = lots of people trading = strong interest. Low volume = few people trading = less confidence in the price move.\n\nThink of it like foot traffic in a store \u2014 busy store means the sale is popular!" },
+  { id: "market-hours", q: "When is the market open?", a: "US Stock Market (NYSE/NASDAQ):\n\u2022 Regular hours: 9:30 AM \u2013 4:00 PM Eastern\n\u2022 Pre-market: 4:00 AM \u2013 9:30 AM Eastern\n\u2022 After-hours: 4:00 PM \u2013 8:00 PM Eastern\n\nMarkets are closed on weekends and major holidays." },
+  { id: "what-ticker", q: "What is a ticker symbol?", a: "A ticker symbol is a short code for a company on the stock exchange. Examples:\n\u2022 AAPL = Apple\n\u2022 TSLA = Tesla\n\u2022 GOOGL = Google (Alphabet)\n\u2022 AMZN = Amazon\n\nIt\u2019s like a username for stocks!" },
+  { id: "buy-sell", q: "How do you actually buy a stock?", a: "1. Open a brokerage account (like Robinhood, Fidelity, Schwab)\n2. Deposit money\n3. Search for the stock\u2019s ticker symbol\n4. Choose how many shares (or dollar amount)\n5. Click Buy!\n\nYou can buy as little as 1 share, or even fractional shares (half a share of Amazon for example)." },
+];
+
+const LEARN_CANDLES = [
+  { id: "ohlcv", q: "What is O, H, L, C, Vol?", a: "These are the 5 key numbers for any time period:\n\n\ud83d\udcc2 O (Open) \u2014 Price when the period STARTED\n\u2b06\ufe0f H (High) \u2014 HIGHEST price reached\n\u2b07\ufe0f L (Low) \u2014 LOWEST price reached\n\ud83d\udcc1 C (Close) \u2014 Price when the period ENDED\n\ud83d\udcca Vol (Volume) \u2014 How many shares traded\n\nExample: O:$185.20 H:$186.10 L:$184.80 C:$185.90\nStarted at $185.20, peaked at $186.10, dipped to $184.80, ended at $185.90." },
+  { id: "green-red", q: "Green vs Red candles?", a: "\ud83d\udfe2 GREEN candle: Close > Open (price went UP)\nThe stock ended HIGHER than it started \u2014 buyers won!\n\n\ud83d\udd34 RED candle: Close < Open (price went DOWN)\nThe stock ended LOWER than it started \u2014 sellers won!\n\nThe BODY (thick part) shows the range between Open and Close.\nThe WICKS (thin lines) show the High and Low extremes." },
+  { id: "wick-body", q: "What are wicks and bodies?", a: "The candle anatomy:\n\n  |   \u2190 Upper wick (reached the High)\n \u250c\u2534\u2510\n \u2502 \u2502  \u2190 Body (Open to Close range)\n \u2514\u252c\u2518\n  |   \u2190 Lower wick (reached the Low)\n\n\u2022 LONG body = strong move in one direction\n\u2022 SHORT body = indecision\n\u2022 LONG upper wick = went high but got pushed back down\n\u2022 LONG lower wick = went low but bounced back up" },
+  { id: "timeframes", q: "What do time ranges mean? (1D, 5D, 1M...)", a: "Each button zooms out further in time:\n\n1D (1 Day) \u2014 Each candle = a few minutes of today\n5D (5 Days) \u2014 Each candle = ~15 min over the week\n1M (1 Month) \u2014 Each candle = 1 day\n3M (3 Months) \u2014 Each candle = 1 day\n6M (6 Months) \u2014 Each candle = 1 day\n1Y (1 Year) \u2014 Each candle = 1 week\n\nZoom out for the big picture, zoom in for detail!" },
+];
+
+const LEARN_NUMBERS = [
+  { id: "market-cap", q: "Market Cap (e.g., $3.2T)", a: "Market Cap = Stock Price \u00d7 Total Shares\n\nIt tells you how much the ENTIRE company is worth.\n\n\u2022 Mega Cap: >$200B (Apple, Microsoft, Nvidia)\n\u2022 Large Cap: $10B\u2013$200B\n\u2022 Mid Cap: $2B\u2013$10B\n\u2022 Small Cap: <$2B\n\nT = Trillion ($1,000,000,000,000)\nB = Billion ($1,000,000,000)\nM = Million ($1,000,000)" },
+  { id: "pe-ratio", q: "P/E Ratio (e.g., 28.5)", a: "P/E = Price \u00f7 Earnings Per Share\n\nIt tells you how much investors pay for each $1 of profit.\n\n\u2022 P/E of 28.5 means investors pay $28.50 for every $1 earned\n\u2022 HIGH P/E (>30) = expensive, maybe fast-growing\n\u2022 LOW P/E (<15) = cheaper, might be a bargain or troubled\n\nThink of it as: \u201cHow many years of profit to pay back the stock price?\u201d" },
+  { id: "percent-change", q: "Percent Change (e.g., +2.5%)", a: "Shows how much the stock moved vs yesterday\u2019s close.\n\n+2.5% = stock is UP 2.5% from yesterday\n-1.3% = stock is DOWN 1.3%\n\nOn a $100 stock:\n\u2022 +2.5% = up $2.50 (now $102.50)\n\u2022 -1.3% = down $1.30 (now $98.70)\n\n\ud83d\udfe2 Green percentage = up\n\ud83d\udd34 Red percentage = down" },
+  { id: "52wk", q: "52-Week High/Low", a: "The HIGHEST and LOWEST price in the past year.\n\n\u2022 Near 52-week HIGH = doing well (or overpriced?)\n\u2022 Near 52-week LOW = struggling (or buying opportunity?)\n\nHelps you see where today\u2019s price fits in the year\u2019s range." },
+  { id: "div-yield", q: "Dividend Yield (e.g., 1.5%)", a: "Some companies share profits as cash payments called DIVIDENDS.\n\nDividend Yield = Annual Dividend \u00f7 Stock Price\n\n\u2022 1.5% yield on $200 stock = $3.00/year per share\n\u2022 Usually paid quarterly ($0.75 every 3 months)\n\nNot all stocks pay dividends. Growth companies like Tesla reinvest instead." },
+  { id: "eps", q: "EPS \u2014 Earnings Per Share", a: "EPS = Total Profit \u00f7 Number of Shares\n\nTells you how much profit per share.\n\u2022 EPS of $6.50 = company earned $6.50 per share\n\u2022 Higher = more profitable\n\u2022 Compare across quarters to see growth\n\nThis is the \u201cE\u201d in P/E ratio!" },
+  { id: "beta", q: "Beta (e.g., 1.2)", a: "Measures how much a stock moves vs the overall market.\n\n\u2022 Beta 1.0 = moves exactly like the market\n\u2022 Beta 1.5 = moves 50% MORE (riskier, more reward)\n\u2022 Beta 0.5 = moves 50% LESS (calmer, safer)\n\nHigh beta = rollercoaster \ud83c\udfa2\nLow beta = gentle ride \ud83d\ude82" },
+  { id: "avg-vol", q: "Average Volume", a: "The typical number of shares traded per day, averaged over time.\n\nCompare today\u2019s volume to the average:\n\u2022 Today ABOVE average = unusual interest, big news?\n\u2022 Today BELOW average = quiet day, less conviction\n\nBig price moves on high volume are more \u201creal\u201d than on low volume." },
+];
+
+const LEARN_PATTERNS = [
+  { id: "doji", q: "Doji \u2014 The Indecision Candle", a: "A Doji has almost NO body (Open \u2248 Close) with wicks both sides.\n\n  |\n  +  \u2190 tiny/no body\n  |\n\nBuyers and sellers fought to a draw.\n\n\u26a0\ufe0f After a big move, a Doji can signal a REVERSAL \u2014 the trend might change." },
+  { id: "hammer", q: "Hammer \u2014 Bounce Signal", a: "Small body at TOP, LONG lower wick.\n\n \u250c\u2510\n \u2514\u252c\u2518\n  |   \u2190 long lower wick\n  |\n\nPrice dropped a lot but buyers pushed it back up.\n\n\u2705 After a downtrend, a Hammer suggests price might go UP (bullish reversal)." },
+  { id: "engulfing", q: "Engulfing \u2014 Strong Reversal", a: "When a candle\u2019s body completely COVERS the previous candle.\n\n\ud83d\udfe2 Bullish Engulfing (after downtrend):\nSmall red \u2192 BIG green = buyers taking over!\n\n\ud83d\udd34 Bearish Engulfing (after uptrend):\nSmall green \u2192 BIG red = sellers taking over!\n\nBigger engulfing candle = stronger signal." },
+  { id: "support-resistance", q: "Support & Resistance", a: "SUPPORT = price floor where stock stops falling and bounces up. Like a trampoline.\n\nRESISTANCE = price ceiling where stock stops rising and bounces down. Like a ceiling.\n\n\u2022 Support BREAKS \u2192 price usually drops more\n\u2022 Resistance BREAKS \u2192 price usually rises more (\u201cbreakout\u201d)\n\nLook for levels the price bounced off multiple times!" },
+  { id: "trend", q: "Uptrend vs Downtrend", a: "UPTREND: Series of higher highs and higher lows.\nLike stairs going up \u2014 each step higher than the last.\n\nDOWNTREND: Series of lower highs and lower lows.\nLike stairs going down.\n\nSIDEWAYS: Price bouncing between support and resistance.\nNo clear direction \u2014 waiting for a breakout." },
+];
+
+const LEARN_GLOSSARY = [
+  { term: "Ask", def: "The lowest price a seller will accept. When you buy, you usually pay the ask." },
+  { term: "Bid", def: "The highest price a buyer will pay. When you sell, you usually get the bid." },
+  { term: "Spread", def: "Gap between Bid and Ask. Tight spread = easy to trade. Wide spread = less liquid." },
+  { term: "Limit Order", def: "Buy/sell at a SPECIFIC price or better. You set the price, but it might not fill." },
+  { term: "Market Order", def: "Buy/sell immediately at the current price. Fast but you might not get the exact price shown." },
+  { term: "Stop Loss", def: "Auto-sell if price drops to a level. Protects you from big losses. Like a safety net." },
+  { term: "Portfolio", def: "All your stocks and investments combined. Your collection." },
+  { term: "Diversification", def: "Own different types of investments. Don\u2019t put all eggs in one basket!" },
+  { term: "ETF", def: "Exchange-Traded Fund \u2014 a bundle of stocks in one package. SPY = all S&P 500 companies." },
+  { term: "IPO", def: "Initial Public Offering \u2014 when a company first sells stock to the public." },
+  { term: "Short Selling", def: "Betting a stock goes DOWN. Borrow shares, sell high, buy back lower. Very risky!" },
+  { term: "Margin", def: "Borrowing money to buy more stock. Amplifies gains AND losses. Risky for beginners." },
+  { term: "Volatility", def: "How wildly a stock\u2019s price swings. High volatility = big moves = more risk + opportunity." },
+  { term: "Liquidity", def: "How easily you can buy/sell without moving the price. Big stocks = very liquid." },
+  { term: "Correction", def: "Market drops 10%+ from peak. Normal, happens regularly. Not as bad as a crash." },
+  { term: "Rally", def: "A period when prices rise significantly. Opposite of a selloff." },
+  { term: "Blue Chip", def: "Large, stable, well-known companies. Apple, Microsoft. Usually safer." },
+  { term: "Penny Stock", def: "Stocks under $5. Often tiny companies. Extremely risky \u2014 many go to zero." },
+  { term: "After Hours", def: "Trading after market close (4\u20138 PM ET). Prices can move differently." },
+  { term: "Breakout", def: "When price pushes through resistance or support. Often leads to a big move." },
 ];
 
 // ─── FORMATTERS ───────────────────────────────────────────────────────────────
@@ -533,26 +566,59 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
   );
 }
 
-// ─── GLOSSARY SECTION ─────────────────────────────────────────────────────────
-function GlossarySection() {
-  const [open, setOpen] = useState(false);
+// ─── LEARN SECTION ────────────────────────────────────────────────────────────
+function LearnSection() {
+  const [tab, setTab] = useState("basics");
+  const [expanded, setExpanded] = useState(null);
+  const toggle = (id) => setExpanded(expanded === id ? null : id);
+
+  const tabs = [
+    { id: "basics", label: "\ud83d\udcd6 Basics" },
+    { id: "candles", label: "\ud83d\udd6f\ufe0f Candles" },
+    { id: "numbers", label: "\ud83d\udd22 Numbers" },
+    { id: "patterns", label: "\ud83d\udcd0 Patterns" },
+    { id: "glossary", label: "\ud83d\udcda Glossary" },
+  ];
+
+  const dataMap = { basics: LEARN_BASICS, candles: LEARN_CANDLES, numbers: LEARN_NUMBERS, patterns: LEARN_PATTERNS };
+
+  const renderAccordion = (items) => items.map((item) => (
+    <div key={item.id} className={`learn-accordion ${expanded === item.id ? "expanded" : ""}`}>
+      <button className="learn-acc-btn" onClick={() => toggle(item.id)}>
+        <span>{item.q}</span>
+        <span className="learn-acc-arrow">\u25bc</span>
+      </button>
+      {expanded === item.id && <div className="learn-acc-body">{item.a}</div>}
+    </div>
+  ));
+
+  const renderGlossary = () => LEARN_GLOSSARY.map((g, i) => (
+    <div key={i} className="glossary-row">
+      <span className="glossary-term">{g.term}</span>
+      <span className="glossary-def">{g.def}</span>
+    </div>
+  ));
+
   return (
     <div className="card">
-      <button className="section-toggle" onClick={() => setOpen(!open)}>
-        <span>{open ? "\u25bc" : "\u25b6"}</span>
-        <span>{"\ud83d\udcd6 Stock Trading Glossary \u2014 What every number & term means"}</span>
-      </button>
-      {open && (
-        <div className="glossary-grid">
-          {GLOSSARY.map((g) => (
-            <div className="gloss-item" key={g.term}>
-              <div className="gloss-term">{g.term}</div>
-              <div className="gloss-def">{g.def}</div>
-              {g.example && <div className="gloss-example">{"Example: "}{g.example}</div>}
-            </div>
-          ))}
-        </div>
-      )}
+      <h2>{"\ud83c\udf93 Learn Stock Trading"}</h2>
+      <p style={{ color: "#8899a6", fontSize: 13, marginBottom: 14 }}>
+        Tap any topic to learn what the numbers, charts, and terms mean in plain English.
+      </p>
+      <div className="learn-tabs">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            className={`learn-tab ${tab === t.id ? "active" : ""}`}
+            onClick={() => { setTab(t.id); setExpanded(null); }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="learn-scroll">
+        {tab === "glossary" ? renderGlossary() : renderAccordion(dataMap[tab])}
+      </div>
     </div>
   );
 }
@@ -750,7 +816,7 @@ export default function App() {
         </div>
       )}
 
-      <GlossarySection />
+      <LearnSection />
     </div>
   );
 }
