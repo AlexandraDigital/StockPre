@@ -294,8 +294,8 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
     { label: "Day Low",    value: curr + fmtPrice(data.dayLow) },
     { label: "Volume",     value: fmtVolume(data.volume) },
     { label: "Market Cap", value: fmtCap(data.marketCap) },
-    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)                      : "\u2014" },
-    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2)              : "\u2014" },
+    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)         : "\u2014" },
+    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2) : "\u2014" },
     { label: "52W High",   value: curr + fmtPrice(data.week52High) },
     { label: "52W Low",    value: curr + fmtPrice(data.week52Low) },
     { label: "Avg Volume", value: fmtVolume(data.avgVolume) },
@@ -305,12 +305,12 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
 
   const hovStr = hovered
     ? `O:${curr}${fmtPrice(hovered.o)}  H:${curr}${fmtPrice(hovered.h)}  L:${curr}${fmtPrice(hovered.l)}  C:${curr}${fmtPrice(hovered.c)}  Vol:${fmtVolume(hovered.v)}  ${fmtTime(hovered.time, range)}`
-    : "\u00a0";
+    : "";
 
   return (
     <div>
       <div className="refresh-row">
-        <span className="refresh-info">{lastUpdated ? `Updated ${lastUpdated}` : ""} \u00b7 Auto-refresh every 30s</span>
+        <span className="refresh-info">{lastUpdated ? `Updated ${lastUpdated}` : ""} {"\u00b7"} Auto-refresh every 30s</span>
         <button className="btn-sm" onClick={onRefresh} disabled={refreshing}>{refreshing ? "\u27f3" : "\u21bb Refresh"}</button>
       </div>
 
@@ -367,7 +367,7 @@ function GlossarySection() {
     <div className="card">
       <button className="section-toggle" onClick={() => setOpen(!open)}>
         <span>{open ? "\u25bc" : "\u25b6"}</span>
-        <span>{"\ud83d\udcd6"} Stock Trading Glossary \u2014 What every number & term means</span>
+        <span>{"\ud83d\udcd6 Stock Trading Glossary \u2014 What every number & term means"}</span>
       </button>
       {open && (
         <div className="glossary-grid">
@@ -375,7 +375,7 @@ function GlossarySection() {
             <div className="gloss-item" key={g.term}>
               <div className="gloss-term">{g.term}</div>
               <div className="gloss-def">{g.def}</div>
-              {g.example && <div className="gloss-example">Example: {g.example}</div>}
+              {g.example && <div className="gloss-example">{"Example: "}{g.example}</div>}
             </div>
           ))}
         </div>
@@ -516,7 +516,7 @@ export default function App() {
   return (
     <div className="app">
       <h1>{"\ud83d\udcc8"} Stock AI Dashboard</h1>
-      <p className="subtitle">Real-time prices \u00b7 Candlestick charts \u00b7 AI-powered analysis \u00b7 Auto-refresh every 30s</p>
+      <p className="subtitle">{"Real-time prices \u00b7 Candlestick charts \u00b7 AI-powered analysis \u00b7 Auto-refresh every 30s"}</p>
 
       <div className="card">
         <form onSubmit={handleAnalyze}>
@@ -548,7 +548,7 @@ export default function App() {
 
       {showStock && (
         <div className="card">
-          {stockLoading && !stockData && <div className="response loading">{"\u27f3"} Fetching live market data\u2026</div>}
+          {stockLoading && !stockData && <div className="response loading">{"\u27f3 Fetching live market data\u2026"}</div>}
           {stockErr && !stockData      && <div className="response error">{"\u26a0"} {stockErr}</div>}
           {stockData && (
             <StockPanel
@@ -571,7 +571,7 @@ export default function App() {
               <span className="tag">{activeLabel}</span>
             </div>
           )}
-          {aiLoading && <div className="response loading">{"\u27f3"} Generating AI analysis\u2026</div>}
+          {aiLoading && <div className="response loading">{"\u27f3 Generating AI analysis\u2026"}</div>}
           {aiError   && <div className="response error">{"\u26a0"} {aiError}</div>}
           {response  && <div className="response">{response}</div>}
         </div>
