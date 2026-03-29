@@ -66,7 +66,7 @@ const APP_CSS = `
   .btn-zoom { background: none; border: 1px solid #1e3040; color: #5a7a8a; width: 26px; height: 26px; border-radius: 4px; font-family: monospace; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.2s, border-color 0.2s; padding: 0; }
   .btn-zoom:hover { color: #00d9ff; border-color: #00d9ff; }
   .btn-zoom:disabled { opacity: 0.3; cursor: not-allowed; }
-  .crosshair-info { font-size: 0.75rem; color: #b8ccd8; text-align: right; min-height: 1.1em; margin-bottom: 0.3rem; font-family: monospace; }
+  .crosshair-info { font-size: 0.78rem; color: #00d9ff; text-align: left; min-height: 1.4em; margin-bottom: 0.4rem; font-family: monospace; background: #0a1520; padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid #1e3040; white-space: nowrap; overflow-x: auto; }
   .chart-vol-label { font-size: 0.65rem; fill: #3a5a6a; font-family: monospace; }
 `;
 
@@ -157,17 +157,29 @@ function fmtCap(n) {
 function fmtTime(isoStr, range) {
   if (!isoStr) return "";
   const d = new Date(isoStr);
-  if (range === "1d" || range === "5d") {
-    return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+  if (range === "1d") {
+    return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
   }
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  if (range === "5d") {
+    return d.toLocaleDateString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit", hour12: true });
+  }
+  if (range === "1mo" || range === "3mo") {
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" });
+}
+
+function fmtDate(isoStr) {
+  if (!isoStr) return "";
+  const d = new Date(isoStr);
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true });
 }
 
 // ─── CHART CONSTANTS ──────────────────────────────────────────────────────────
 const VW   = 800;
 const H_PX = 300;
 const H_VL = 70;
-const PAD  = { top: 12, right: 62, bottom: 28, left: 8 };
+const PAD  = { top: 12, right: 68, bottom: 44, left: 8 };
 
 function useChartLayout(candles) {
   if (!candles || candles.length < 2) return null;
@@ -192,7 +204,7 @@ function useChartLayout(candles) {
   }
 
   const xTicks = [];
-  const stride = Math.max(1, Math.floor(candles.length / 5));
+  const stride = Math.max(1, Math.floor(candles.length / 8));
   for (let i = 0; i < candles.length; i += stride) {
     xTicks.push({ i, x: scaleX(i), time: candles[i].time });
   }
@@ -210,10 +222,11 @@ function CandlestickChart({ candles, range, onHover }) {
   const baseY = H_PX - PAD.bottom;
 
   return (
-    <svg viewBox={`0 0 ${VW} ${H_PX + H_VL + 12}`} width="100%" style={{display:'block'}}>
+    <svg viewBox={`0 0 ${VW} ${H_PX + H_VL + 30}`} width="100%" style={{display:'block'}}>
       {yTicks.map((t,i) => <line key={i} x1={PAD.left} y1={t.y} x2={VW-PAD.right} y2={t.y} stroke="#1e3040" strokeWidth="0.5"/>)}
-      {yTicks.map((t,i) => <text key={i} x={VW-PAD.right+4} y={t.y+4} fontSize="9" fill="#3a5a6a" fontFamily="monospace">${fmtPrice(t.p)}</text>)}
-      {xTicks.map((t,i) => <text key={i} x={t.x} y={H_PX+H_VL+10} fontSize="9" fill="#3a5a6a" textAnchor="middle" fontFamily="monospace">{fmtTime(t.time, range)}</text>)}
+      {yTicks.map((t,i) => <text key={i} x={VW-PAD.right+4} y={t.y+4} fontSize="10" fill="#7a9aaa" fontFamily="monospace" fontWeight="500">${fmtPrice(t.p)}</text>)}
+      {xTicks.map((t,i) => <text key={i} x={t.x} y={H_PX+H_VL+22} fontSize="10.5" fill="#7a9aaa" textAnchor="middle" fontFamily="monospace" fontWeight="500">{fmtTime(t.time, range)}</text>)}
+      {xTicks.map((t,i) => <line key={"xt"+i} x1={t.x} y1={H_PX - PAD.bottom} x2={t.x} y2={H_PX - PAD.bottom + 4} stroke="#3a5a6a" strokeWidth="0.5"/>)}
       {candles.map((d,i) => {
         const x  = scaleX(i);
         const oY = scaleY(d.o);
@@ -260,10 +273,11 @@ function LineAreaChart({ candles, range, onHover, filled }) {
   const fPts = `${scaleX(0)},${baseY} ${pts} ${scaleX(candles.length-1)},${baseY}`;
 
   return (
-    <svg viewBox={`0 0 ${VW} ${H_PX + H_VL + 12}`} width="100%" style={{display:'block'}}>
+    <svg viewBox={`0 0 ${VW} ${H_PX + H_VL + 30}`} width="100%" style={{display:'block'}}>
       {yTicks.map((t,i) => <line key={i} x1={PAD.left} y1={t.y} x2={VW-PAD.right} y2={t.y} stroke="#1e3040" strokeWidth="0.5"/>)}
-      {yTicks.map((t,i) => <text key={i} x={VW-PAD.right+4} y={t.y+4} fontSize="9" fill="#3a5a6a" fontFamily="monospace">${fmtPrice(t.p)}</text>)}
-      {xTicks.map((t,i) => <text key={i} x={t.x} y={H_PX+H_VL+10} fontSize="9" fill="#3a5a6a" textAnchor="middle" fontFamily="monospace">{fmtTime(t.time, range)}</text>)}
+      {yTicks.map((t,i) => <text key={i} x={VW-PAD.right+4} y={t.y+4} fontSize="10" fill="#7a9aaa" fontFamily="monospace" fontWeight="500">${fmtPrice(t.p)}</text>)}
+      {xTicks.map((t,i) => <text key={i} x={t.x} y={H_PX+H_VL+22} fontSize="10.5" fill="#7a9aaa" textAnchor="middle" fontFamily="monospace" fontWeight="500">{fmtTime(t.time, range)}</text>)}
+      {xTicks.map((t,i) => <line key={"xt"+i} x1={t.x} y1={H_PX - PAD.bottom} x2={t.x} y2={H_PX - PAD.bottom + 4} stroke="#3a5a6a" strokeWidth="0.5"/>)}
       {filled && <polygon points={fPts} fill={col} fillOpacity="0.08"/>}
       <polyline points={pts} fill="none" stroke={col} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"/>
       {candles.map((d,i) => (
@@ -449,7 +463,7 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
   ];
 
   const hovStr = hovered
-    ? `O:${curr}${fmtPrice(hovered.o)}  H:${curr}${fmtPrice(hovered.h)}  L:${curr}${fmtPrice(hovered.l)}  C:${curr}${fmtPrice(hovered.c)}  Vol:${fmtVolume(hovered.v)}  ${fmtTime(hovered.time, range)}`
+    ? `${fmtDate(hovered.time)}  ·  O:${curr}${fmtPrice(hovered.o)}  H:${curr}${fmtPrice(hovered.h)}  L:${curr}${fmtPrice(hovered.l)}  C:${curr}${fmtPrice(hovered.c)}  Vol:${fmtVolume(hovered.v)}`
     : "";
 
   return (
