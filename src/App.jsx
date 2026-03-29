@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const APP_CSS = `
@@ -56,6 +56,16 @@ const APP_CSS = `
   .gloss-def { color: #8aaabb; font-size: 0.8rem; line-height: 1.5; }
   .gloss-example { color: #5a7a8a; font-size: 0.73rem; margin-top: 0.25rem; font-style: italic; }
   .section-toggle { background: none; border: none; color: #00d9ff; font-family: monospace; font-size: 1rem; cursor: pointer; padding: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left; }
+
+  .chart-outer { position: relative; }
+  .chart-outer.zoomed { cursor: grab; }
+  .chart-outer.zoomed.dragging { cursor: grabbing; }
+  .zoom-hint { font-size: 0.7rem; color: #3a5a6a; text-align: right; margin-top: 0.3rem; }
+  .zoom-bar { display: flex; align-items: center; gap: 0.5rem; }
+  .zoom-level { font-size: 0.72rem; color: #5a7a8a; font-family: monospace; min-width: 3.5em; }
+  .btn-zoom { background: none; border: 1px solid #1e3040; color: #5a7a8a; width: 26px; height: 26px; border-radius: 4px; font-family: monospace; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.2s, border-color 0.2s; padding: 0; }
+  .btn-zoom:hover { color: #00d9ff; border-color: #00d9ff; }
+  .btn-zoom:disabled { opacity: 0.3; cursor: not-allowed; }
   .crosshair-info { font-size: 0.75rem; color: #b8ccd8; text-align: right; min-height: 1.1em; margin-bottom: 0.3rem; font-family: monospace; }
   .chart-vol-label { font-size: 0.65rem; fill: #3a5a6a; font-family: monospace; }
 `;
@@ -280,12 +290,147 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
   const [chartType, setChartType] = useState("Candlestick");
   const [hovered, setHovered]     = useState(null);
 
+  // ── Zoom state ──
+  const allCandles = data.candles || [];
+  const [viewStart, setViewStart] = useState(0);
+  const [viewEnd, setViewEnd]     = useState(allCandles.length);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef({ startX: 0, startViewStart: 0, startViewEnd: 0 });
+  const chartContainerRef = useRef(null);
+  const MIN_VISIBLE = 8; // minimum candles visible when fully zoomed in
+
+  // Reset zoom when data or range changes
+  useEffect(() => {
+    setViewStart(0);
+    setViewEnd(allCandles.length);
+  }, [allCandles.length, range]);
+
+  const isZoomed = viewStart !== 0 || viewEnd !== allCandles.length;
+  const visibleCount = viewEnd - viewStart;
+  const zoomPercent = allCandles.length > 0 ? Math.round((allCandles.length / visibleCount) * 100) : 100;
+
+  // Zoom with scroll wheel
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    const total = allCandles.length;
+    if (total < MIN_VISIBLE) return;
+
+    const rect = chartContainerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const mouseRatio = (e.clientX - rect.left) / rect.width; // 0..1, where mouse is horizontally
+
+    const currentStart = viewStart;
+    const currentEnd = viewEnd;
+    const currentLen = currentEnd - currentStart;
+
+    // Zoom factor: scroll up = zoom in, scroll down = zoom out
+    const zoomStep = Math.max(1, Math.round(currentLen * 0.1));
+    let newLen = currentLen;
+    if (e.deltaY < 0) {
+      // Zoom in
+      newLen = Math.max(MIN_VISIBLE, currentLen - zoomStep);
+    } else {
+      // Zoom out
+      newLen = Math.min(total, currentLen + zoomStep);
+    }
+
+    if (newLen === currentLen) return;
+
+    // Distribute the change around the mouse position
+    const shrink = currentLen - newLen;
+    let newStart = currentStart + Math.round(shrink * mouseRatio);
+    let newEnd = newStart + newLen;
+
+    // Clamp
+    if (newStart < 0) { newStart = 0; newEnd = newLen; }
+    if (newEnd > total) { newEnd = total; newStart = total - newLen; }
+    if (newStart < 0) newStart = 0;
+
+    setViewStart(newStart);
+    setViewEnd(newEnd);
+  }, [allCandles.length, viewStart, viewEnd]);
+
+  // Drag to pan
+  const handleMouseDown = useCallback((e) => {
+    if (!isZoomed) return;
+    e.preventDefault();
+    setIsDragging(true);
+    dragRef.current = { startX: e.clientX, startViewStart: viewStart, startViewEnd: viewEnd };
+  }, [isZoomed, viewStart, viewEnd]);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!isDragging) return;
+    const rect = chartContainerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const candlesPerPixel = (dragRef.current.startViewEnd - dragRef.current.startViewStart) / rect.width;
+    const shift = Math.round(-dx * candlesPerPixel);
+
+    const len = dragRef.current.startViewEnd - dragRef.current.startViewStart;
+    let newStart = dragRef.current.startViewStart + shift;
+    let newEnd = newStart + len;
+
+    if (newStart < 0) { newStart = 0; newEnd = len; }
+    if (newEnd > allCandles.length) { newEnd = allCandles.length; newStart = allCandles.length - len; }
+    if (newStart < 0) newStart = 0;
+
+    setViewStart(newStart);
+    setViewEnd(newEnd);
+  }, [isDragging, allCandles.length]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  // Zoom button handlers
+  const zoomIn = () => {
+    const len = viewEnd - viewStart;
+    const newLen = Math.max(MIN_VISIBLE, Math.round(len * 0.7));
+    const center = Math.round((viewStart + viewEnd) / 2);
+    let ns = center - Math.round(newLen / 2);
+    let ne = ns + newLen;
+    if (ns < 0) { ns = 0; ne = newLen; }
+    if (ne > allCandles.length) { ne = allCandles.length; ns = allCandles.length - newLen; }
+    if (ns < 0) ns = 0;
+    setViewStart(ns);
+    setViewEnd(ne);
+  };
+
+  const zoomOut = () => {
+    const len = viewEnd - viewStart;
+    const newLen = Math.min(allCandles.length, Math.round(len * 1.4));
+    const center = Math.round((viewStart + viewEnd) / 2);
+    let ns = center - Math.round(newLen / 2);
+    let ne = ns + newLen;
+    if (ns < 0) { ns = 0; ne = Math.min(newLen, allCandles.length); }
+    if (ne > allCandles.length) { ne = allCandles.length; ns = Math.max(0, allCandles.length - newLen); }
+    setViewStart(ns);
+    setViewEnd(ne);
+  };
+
+  const resetZoom = () => {
+    setViewStart(0);
+    setViewEnd(allCandles.length);
+  };
+
+  const candles = allCandles.slice(viewStart, viewEnd);
+
   const up      = (data.change ?? 0) >= 0;
   const sign    = up ? "+" : "";
   const chgStr  = `${sign}${fmtPrice(data.change)} (${sign}${data.changePercent?.toFixed(2)}%)`;
   const state   = data.marketState || "CLOSED";
   const curr    = data.currency === "USD" ? "$" : (data.currency ?? "") + " ";
-  const candles = data.candles || [];
 
   const stats = [
     { label: "Open",       value: curr + fmtPrice(data.open) },
@@ -342,6 +487,12 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
                 <button key={t} className={`btn-sm${chartType === t ? " active" : ""}`} onClick={() => setChartType(t)}>{t}</button>
               ))}
             </div>
+            <div className="zoom-bar">
+              <button className="btn-zoom" onClick={zoomIn} disabled={visibleCount <= MIN_VISIBLE} title="Zoom In">+</button>
+              <button className="btn-zoom" onClick={zoomOut} disabled={!isZoomed} title="Zoom Out">{"−"}</button>
+              {isZoomed && <button className="btn-sm" onClick={resetZoom}>{"↺ Reset"}</button>}
+              {isZoomed && <span className="zoom-level">{zoomPercent}%</span>}
+            </div>
             <div className="btn-group">
               {RANGES.map((r) => (
                 <button key={r} className={`btn-sm${range === r ? " active" : ""}`} onClick={() => setRange(r)}>{r.toUpperCase()}</button>
@@ -349,11 +500,19 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
             </div>
           </div>
           <div className="crosshair-info">{hovStr}</div>
-          <div className="chart-wrap">
-            {chartType === "Candlestick" && <CandlestickChart candles={candles} range={range} onHover={setHovered}/>}
-            {chartType === "Line"        && <LineAreaChart    candles={candles} range={range} onHover={setHovered} filled={false}/>}
-            {chartType === "Area"        && <LineAreaChart    candles={candles} range={range} onHover={setHovered} filled={true}/>}
+          <div
+            className={`chart-outer${isZoomed ? " zoomed" : ""}${isDragging ? " dragging" : ""}`}
+            ref={chartContainerRef}
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="chart-wrap">
+              {chartType === "Candlestick" && <CandlestickChart candles={candles} range={range} onHover={setHovered}/>}
+              {chartType === "Line"        && <LineAreaChart    candles={candles} range={range} onHover={setHovered} filled={false}/>}
+              {chartType === "Area"        && <LineAreaChart    candles={candles} range={range} onHover={setHovered} filled={true}/>}
+            </div>
           </div>
+          {!isZoomed && <div className="zoom-hint">{"Scroll to zoom · Drag to pan when zoomed"}</div>}
         </>
       )}
     </div>
