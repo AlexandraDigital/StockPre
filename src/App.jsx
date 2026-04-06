@@ -124,12 +124,12 @@ const GLOSSARY = [
 
 // ─── FORMATTERS ───────────────────────────────────────────────────────────────
 function fmtPrice(n) {
-  if (n == null) return "—";
+  if (n == null) return "–";
   return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtVolume(n) {
-  if (n == null) return "—";
+  if (n == null) return "–";
   if (n >= 1e9) return (n / 1e9).toFixed(2) + "B";
   if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
   if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
@@ -137,7 +137,7 @@ function fmtVolume(n) {
 }
 
 function fmtCap(n) {
-  if (n == null) return "—";
+  if (n == null) return "–";
   if (n >= 1e12) return "$" + (n / 1e12).toFixed(2) + "T";
   if (n >= 1e9)  return "$" + (n / 1e9).toFixed(2) + "B";
   if (n >= 1e6)  return "$" + (n / 1e6).toFixed(2) + "M";
@@ -264,7 +264,8 @@ function LineAreaChart({ candles, range, onHover, filled }) {
         const x  = scaleX(i);
         const vy = scaleVol(d.v || 0);
         const bH = Math.max(1, H_VL - vy);
-        const up = i === 0 ? true : (d.c >= (candles[i-1]?.c ?? d.c));
+        // FIX: Compare to previous candle close (not always true for first candle)
+        const up = i === 0 ? (d.c >= d.o) : (d.c >= (candles[i-1]?.c ?? d.c));
         return <rect key={i} x={x - candleW/2} y={H_PX+10+vy} width={candleW} height={bH} fill={up ? "#00ff88" : "#ff4d6d"} opacity="0.4"/>;
       })}
       <text x={VW-PAD.right+4} y={H_PX+16} fontSize="8" fill="#3a5a6a" fontFamily="monospace">VOL</text>
@@ -294,18 +295,18 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
     { label: "Day Low",    value: curr + fmtPrice(data.dayLow) },
     { label: "Volume",     value: fmtVolume(data.volume) },
     { label: "Market Cap", value: fmtCap(data.marketCap) },
-    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)                      : "—" },
-    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2)              : "—" },
+    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)                      : "–" },
+    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2)              : "–" },
     { label: "52W High",   value: curr + fmtPrice(data.week52High) },
     { label: "52W Low",    value: curr + fmtPrice(data.week52Low) },
     { label: "Avg Volume", value: fmtVolume(data.avgVolume) },
-    { label: "Beta",       value: data.beta          ? data.beta.toFixed(2)           : "—" },
-    { label: "Div Yield",  value: data.dividendYield ? (data.dividendYield * 100).toFixed(2) + "%" : "—" },
+    { label: "Beta",       value: data.beta          ? data.beta.toFixed(2)           : "–" },
+    { label: "Div Yield",  value: data.dividendYield ? (data.dividendYield * 100).toFixed(2) + "%" : "–" },
   ];
 
   const hovStr = hovered
     ? `O:${curr}${fmtPrice(hovered.o)}  H:${curr}${fmtPrice(hovered.h)}  L:${curr}${fmtPrice(hovered.l)}  C:${curr}${fmtPrice(hovered.c)}  Vol:${fmtVolume(hovered.v)}  ${fmtTime(hovered.time, range)}`
-    : " ";
+    : "·";
 
   return (
     <div>
@@ -403,12 +404,26 @@ async function aiCall(prompt) {
       max_tokens: 600,
     }),
   });
+  
   if (!res.ok) {
     const t = await res.text();
     throw new Error(`API error ${res.status}: ${t}`);
   }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || "No response received.";
+  
+  try {
+    const data = await res.json();
+    // FIX: Safer parsing with fallbacks for malformed responses
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid API response structure');
+    }
+    const content = data.choices?.[0]?.message?.content;
+    if (!content || typeof content !== 'string') {
+      throw new Error('No valid response content from API');
+    }
+    return content;
+  } catch (err) {
+    throw new Error(`Failed to parse API response: ${err.message}`);
+  }
 }
 
 function buildPrompt(ticker, type, stock) {
@@ -463,17 +478,19 @@ export default function App() {
     }
   }
 
+  // FIX: Added missing dependency activeTicker to prevent stale closures
   useEffect(() => {
     if (!activeTicker) return;
     loadStock(activeTicker, range);
-  }, [range]); // eslint-disable-line
+  }, [activeTicker, range]);
 
+  // FIX: Added missing dependencies to prevent stale interval closures
   useEffect(() => {
     if (!activeTicker) return;
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => loadStock(activeTicker, range, true), 30000);
     return () => clearInterval(intervalRef.current);
-  }, [activeTicker, range]); // eslint-disable-line
+  }, [activeTicker, range]);
 
   async function handleAnalyze(e) {
     e.preventDefault();
