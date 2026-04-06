@@ -30,10 +30,7 @@
       "form_factor": "narrow"
     }
   ],
-  "categories": [
-    "finance",
-    "productivity"
-  ],
+  "categories": ["finance", "productivity"],
   "shortcuts": [
     {
       "name": "Analyze Stock",
