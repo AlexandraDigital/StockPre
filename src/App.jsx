@@ -82,54 +82,54 @@ const STATE_LABEL = {
 const STAT_INFO = {
   "Open":       "The first traded price when the market opened at 9:30 AM ET. Compare to current price to see today's direction.",
   "Prev Close": "Yesterday's closing price. The daily change % is calculated from this number.",
-  "Day High":   "Highest price reached today. Acts as a short-term resistance level \u2014 price may pull back here.",
-  "Day Low":    "Lowest price today. Acts as a short-term support level \u2014 price may bounce here.",
+  "Day High":   "Highest price reached today. Acts as a short-term resistance level — price may pull back here.",
+  "Day Low":    "Lowest price today. Acts as a short-term support level — price may bounce here.",
   "Volume":     "Shares bought & sold today. High volume = strong conviction behind the move. Low volume = weak move.",
-  "Market Cap": "Total company value = Price \u00d7 Shares Outstanding. Large Cap >$10B, Mid Cap $2\u201310B, Small Cap <$2B.",
-  "P/E Ratio":  "Price-to-Earnings \u2014 how much you pay per $1 of profit. S&P 500 avg \u2248 20\u201325. High P/E = growth expectations.",
-  "EPS":        "Earnings Per Share \u2014 company profit \u00f7 total shares. Higher EPS = more profitable per share.",
+  "Market Cap": "Total company value = Price × Shares Outstanding. Large Cap >$10B, Mid Cap $2–10B, Small Cap <$2B.",
+  "P/E Ratio":  "Price-to-Earnings — how much you pay per $1 of profit. S&P 500 avg ≈ 20–25. High P/E = growth expectations.",
+  "EPS":        "Earnings Per Share — company profit ÷ total shares. Higher EPS = more profitable per share.",
   "52W High":   "Highest price in the last 52 weeks. Breaking above it is a strong bullish signal.",
   "52W Low":    "Lowest price in the last 52 weeks. Bouncing off it can be bullish; breaking below is bearish.",
-  "Avg Volume": "Average daily shares traded over 3 months. If today's volume is 2\u00d7 avg, something big is happening.",
+  "Avg Volume": "Average daily shares traded over 3 months. If today's volume is 2× avg, something big is happening.",
   "Beta":       "Volatility vs S&P 500. Beta 1.5 = moves 50% more than market. Beta 0.5 = half as volatile. Beta 1 = tracks market.",
-  "Div Yield":  "Annual dividend as % of price. Free income just for holding the stock. 2\u20134% is typical for dividend stocks.",
+  "Div Yield":  "Annual dividend as % of price. Free income just for holding the stock. 2–4% is typical for dividend stocks.",
 };
 
 // ─── GLOSSARY ─────────────────────────────────────────────────────────────────
 const GLOSSARY = [
   { term: "Stock / Share", def: "A small piece of ownership in a company. If Apple has 1 billion shares and you own 1, you own 1 billionth of Apple.", example: "Buying 10 shares of AAPL at $180 costs $1,800 and gives you partial ownership of Apple." },
-  { term: "Ticker Symbol", def: "A short code that identifies a stock on an exchange. Usually 1\u20135 letters.", example: "AAPL = Apple, TSLA = Tesla, NVDA = NVIDIA, MSFT = Microsoft" },
+  { term: "Ticker Symbol", def: "A short code that identifies a stock on an exchange. Usually 1–5 letters.", example: "AAPL = Apple, TSLA = Tesla, NVDA = NVIDIA, MSFT = Microsoft" },
   { term: "Price", def: "What one share costs right now. It changes constantly during market hours based on supply and demand.", example: "If AAPL is $185.50, that's the price the last buyer paid for one Apple share." },
-  { term: "Change & Change %", def: "How much the price moved vs. yesterday's close. Green = up (profit), Red = down (loss).", example: "+$2.50 (+1.37%) means the stock gained $2.50 per share today \u2014 1.37% more than yesterday." },
+  { term: "Change & Change %", def: "How much the price moved vs. yesterday's close. Green = up (profit), Red = down (loss).", example: "+$2.50 (+1.37%) means the stock gained $2.50 per share today — 1.37% more than yesterday." },
   { term: "Open", def: "The first traded price when the market opened at 9:30 AM ET.", example: "If Open is $183 and current price is $185, the stock is up $2 since the market opened." },
   { term: "Close / Prev Close", def: "The final traded price when the market closed at 4:00 PM ET the previous trading day. All daily change %s are calculated from this.", example: "Prev Close $182 + today's change +$3 = current price $185." },
   { term: "High / Low", def: "The highest and lowest prices traded during the current trading session. Shows today's volatility range.", example: "High $187, Low $182 means the stock swung $5 in value today." },
   { term: "Volume", def: "Total shares bought and sold today. High volume confirms the strength of a price move. Low volume suggests weak conviction.", example: "10M volume on a stock that normally trades 2M = major news or institutional buying/selling." },
-  { term: "Market Cap", def: "Total company value = Price \u00d7 Total Shares. Tells you the company's size category.", example: "Large Cap (>$10B) = stable giants like Apple. Small Cap (<$2B) = higher risk, higher potential growth." },
-  { term: "P/E Ratio", def: "Price-to-Earnings ratio. How much you're paying for each $1 of company profit. Lower can mean the stock is cheaper relative to earnings.", example: "P/E 25 = you pay $25 for every $1 the company earns. The S&P 500 average is ~20\u201325." },
-  { term: "EPS", def: "Earnings Per Share \u2014 the company's total profit divided by total shares outstanding. Measures profitability per share.", example: "EPS $6 means the company earned $6 in profit per share last year." },
+  { term: "Market Cap", def: "Total company value = Price × Total Shares. Tells you the company's size category.", example: "Large Cap (>$10B) = stable giants like Apple. Small Cap (<$2B) = higher risk, higher potential growth." },
+  { term: "P/E Ratio", def: "Price-to-Earnings ratio. How much you're paying for each $1 of company profit. Lower can mean the stock is cheaper relative to earnings.", example: "P/E 25 = you pay $25 for every $1 the company earns. The S&P 500 average is ~20–25." },
+  { term: "EPS", def: "Earnings Per Share — the company's total profit divided by total shares outstanding. Measures profitability per share.", example: "EPS $6 means the company earned $6 in profit per share last year." },
   { term: "52-Week High/Low", def: "The highest and lowest traded prices over the past 52 weeks. Key reference points traders watch closely.", example: "Stock near its 52W high = strong momentum. Near 52W low = potential value buy or danger sign." },
   { term: "Beta", def: "Measures how much a stock moves relative to the S&P 500 market. Beta > 1 = more volatile than market. Beta < 1 = more stable.", example: "Beta 1.5: if S&P drops 10%, this stock typically drops 15%. Higher risk, higher potential reward." },
   { term: "Dividend Yield", def: "Annual dividend payment expressed as a % of the current stock price. This is passive income you earn just for holding the stock.", example: "3% yield on a $100 stock = $3/year per share paid directly to you." },
   { term: "Candlestick", def: "A chart bar showing Open, High, Low, Close for one time period. The body shows Open-to-Close movement. The wick shows the full High-to-Low range.", example: "Green candle = price went up that period. Red candle = price went down. Tall wicks = high volatility." },
   { term: "Support Level", def: "A price where the stock tends to stop falling and bounce back up. Think of it as a floor the price respects.", example: "If AAPL bounced off $170 three times, $170 is a strong support level. Break below it = warning sign." },
   { term: "Resistance Level", def: "A price where the stock tends to stop rising and pull back down. Think of it as a ceiling.", example: "If a stock failed to break $200 multiple times, $200 is resistance. Breaking above it = bullish breakout." },
-  { term: "Bull Market", def: "A market trending upward \u2014 broadly defined as a 20%+ rise from recent lows. Investors are optimistic.", example: "2009\u20132020 was the longest bull market in US history, driven by low interest rates and tech growth." },
-  { term: "Bear Market", def: "A market falling 20%+ from recent highs. Investors are pessimistic and selling.", example: "2022 was a bear market \u2014 the S&P 500 dropped ~25% due to rising interest rates and inflation." },
+  { term: "Bull Market", def: "A market trending upward — broadly defined as a 20%+ rise from recent lows. Investors are optimistic.", example: "2009–2020 was the longest bull market in US history, driven by low interest rates and tech growth." },
+  { term: "Bear Market", def: "A market falling 20%+ from recent highs. Investors are pessimistic and selling.", example: "2022 was a bear market — the S&P 500 dropped ~25% due to rising interest rates and inflation." },
   { term: "Moving Average (SMA)", def: "The average price over a set number of days (e.g., 50-day or 200-day MA). Smooths out noise to show the underlying trend.", example: "Price above 50-day MA = short-term uptrend. Price below 200-day MA = long-term downtrend." },
-  { term: "RSI (Relative Strength Index)", def: "A momentum indicator from 0\u2013100 that shows if a stock is overbought or oversold. Think of it as a 'temperature' for price momentum.", example: "RSI > 70 = potentially overbought (may pull back). RSI < 30 = potentially oversold (may bounce). RSI 50 = neutral." },
-  { term: "Pre-Market / After-Hours", def: "Trading that happens before the market opens (4\u20139:30 AM ET) or after it closes (4\u20138 PM ET). Less volume, more volatile, wider price swings.", example: "An earnings report drops at 5 PM \u2014 the stock could move 10% in after-hours before the next regular session." },
+  { term: "RSI (Relative Strength Index)", def: "A momentum indicator from 0–100 that shows if a stock is overbought or oversold. Think of it as a 'temperature' for price momentum.", example: "RSI > 70 = potentially overbought (may pull back). RSI < 30 = potentially oversold (may bounce). RSI 50 = neutral." },
+  { term: "Pre-Market / After-Hours", def: "Trading that happens before the market opens (4–9:30 AM ET) or after it closes (4–8 PM ET). Less volume, more volatile, wider price swings.", example: "An earnings report drops at 5 PM — the stock could move 10% in after-hours before the next regular session." },
   { term: "Market Order vs Limit Order", def: "Market order = buy/sell immediately at whatever the current price is. Limit order = only buy/sell at your specified price or better.", example: "AAPL at $185. Limit order at $180 = only buys if price drops to $180. Market order buys right now at $185." },
 ];
 
 // ─── FORMATTERS ───────────────────────────────────────────────────────────────
 function fmtPrice(n) {
-  if (n == null) return "\u2014";
+  if (n == null) return "—";
   return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtVolume(n) {
-  if (n == null) return "\u2014";
+  if (n == null) return "—";
   if (n >= 1e9) return (n / 1e9).toFixed(2) + "B";
   if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
   if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
@@ -137,7 +137,7 @@ function fmtVolume(n) {
 }
 
 function fmtCap(n) {
-  if (n == null) return "\u2014";
+  if (n == null) return "—";
   if (n >= 1e12) return "$" + (n / 1e12).toFixed(2) + "T";
   if (n >= 1e9)  return "$" + (n / 1e9).toFixed(2) + "B";
   if (n >= 1e6)  return "$" + (n / 1e6).toFixed(2) + "M";
@@ -294,24 +294,24 @@ function StockPanel({ data, onRefresh, refreshing, lastUpdated, range, setRange 
     { label: "Day Low",    value: curr + fmtPrice(data.dayLow) },
     { label: "Volume",     value: fmtVolume(data.volume) },
     { label: "Market Cap", value: fmtCap(data.marketCap) },
-    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)                      : "\u2014" },
-    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2)              : "\u2014" },
+    { label: "P/E Ratio",  value: data.pe   ? data.pe.toFixed(2)                      : "—" },
+    { label: "EPS",        value: data.eps  ? curr + data.eps.toFixed(2)              : "—" },
     { label: "52W High",   value: curr + fmtPrice(data.week52High) },
     { label: "52W Low",    value: curr + fmtPrice(data.week52Low) },
     { label: "Avg Volume", value: fmtVolume(data.avgVolume) },
-    { label: "Beta",       value: data.beta          ? data.beta.toFixed(2)           : "\u2014" },
-    { label: "Div Yield",  value: data.dividendYield ? (data.dividendYield * 100).toFixed(2) + "%" : "\u2014" },
+    { label: "Beta",       value: data.beta          ? data.beta.toFixed(2)           : "—" },
+    { label: "Div Yield",  value: data.dividendYield ? (data.dividendYield * 100).toFixed(2) + "%" : "—" },
   ];
 
   const hovStr = hovered
     ? `O:${curr}${fmtPrice(hovered.o)}  H:${curr}${fmtPrice(hovered.h)}  L:${curr}${fmtPrice(hovered.l)}  C:${curr}${fmtPrice(hovered.c)}  Vol:${fmtVolume(hovered.v)}  ${fmtTime(hovered.time, range)}`
-    : "\u00a0";
+    : " ";
 
   return (
     <div>
       <div className="refresh-row">
-        <span className="refresh-info">{lastUpdated ? `Updated ${lastUpdated}` : ""} \u00b7 Auto-refresh every 30s</span>
-        <button className="btn-sm" onClick={onRefresh} disabled={refreshing}>{refreshing ? "\u27f3" : "\u21bb Refresh"}</button>
+        <span className="refresh-info">{lastUpdated ? `Updated ${lastUpdated}` : ""} · Auto-refresh every 30s</span>
+        <button className="btn-sm" onClick={onRefresh} disabled={refreshing}>{refreshing ? "⟳" : "↻ Refresh"}</button>
       </div>
 
       <div className="stock-header">
@@ -366,8 +366,8 @@ function GlossarySection() {
   return (
     <div className="card">
       <button className="section-toggle" onClick={() => setOpen(!open)}>
-        <span>{open ? "\u25bc" : "\u25b6"}</span>
-        <span>{"\ud83d\udcd6"} Stock Trading Glossary \u2014 What every number & term means</span>
+        <span>{open ? "▼" : "▶"}</span>
+        <span>{"📖"} Stock Trading Glossary — What every number & term means</span>
       </button>
       {open && (
         <div className="glossary-grid">
@@ -414,7 +414,7 @@ async function aiCall(prompt) {
 function buildPrompt(ticker, type, stock) {
   const t = ticker.toUpperCase();
   const ctx = stock
-    ? `Live data \u2014 Price: $${fmtPrice(stock.price)}, Change: ${(stock.change??0)>=0?"+":""}${fmtPrice(stock.change)} (${stock.changePercent?.toFixed(2)}%), Day range: $${fmtPrice(stock.dayLow)}\u2013$${fmtPrice(stock.dayHigh)}, Volume: ${fmtVolume(stock.volume)}, Market Cap: ${fmtCap(stock.marketCap)}, P/E: ${stock.pe?stock.pe.toFixed(1):"N/A"}, Beta: ${stock.beta?stock.beta.toFixed(2):"N/A"}. `
+    ? `Live data — Price: $${fmtPrice(stock.price)}, Change: ${(stock.change??0)>=0?"+":""}${fmtPrice(stock.change)} (${stock.changePercent?.toFixed(2)}%), Day range: $${fmtPrice(stock.dayLow)}–$${fmtPrice(stock.dayHigh)}, Volume: ${fmtVolume(stock.volume)}, Market Cap: ${fmtCap(stock.marketCap)}, P/E: ${stock.pe?stock.pe.toFixed(1):"N/A"}, Beta: ${stock.beta?stock.beta.toFixed(2):"N/A"}. `
     : "";
   const map = {
     predict:   `${ctx}You are a stock market analyst. Provide a short-term price prediction for ${t}. Cover key support/resistance levels, recent trend, and a 1-week outlook. Be concise and analytical.`,
@@ -515,8 +515,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>{"\ud83d\udcc8"} Stock AI Dashboard</h1>
-      <p className="subtitle">Real-time prices \u00b7 Candlestick charts \u00b7 AI-powered analysis \u00b7 Auto-refresh every 30s</p>
+      <h1>{"📈"} Stock AI Dashboard</h1>
+      <p className="subtitle">Real-time prices · Candlestick charts · AI-powered analysis · Auto-refresh every 30s</p>
 
       <div className="card">
         <form onSubmit={handleAnalyze}>
@@ -541,15 +541,15 @@ export default function App() {
             </div>
           </div>
           <button className="btn-primary" type="submit" disabled={aiLoading || !ticker.trim()}>
-            {aiLoading ? "Analyzing\u2026" : "Analyze"}
+            {aiLoading ? "Analyzing…" : "Analyze"}
           </button>
         </form>
       </div>
 
       {showStock && (
         <div className="card">
-          {stockLoading && !stockData && <div className="response loading">{"\u27f3"} Fetching live market data\u2026</div>}
-          {stockErr && !stockData      && <div className="response error">{"\u26a0"} {stockErr}</div>}
+          {stockLoading && !stockData && <div className="response loading">{"⟳"} Fetching live market data…</div>}
+          {stockErr && !stockData      && <div className="response error">{"⚠"} {stockErr}</div>}
           {stockData && (
             <StockPanel
               data={stockData}
@@ -571,8 +571,8 @@ export default function App() {
               <span className="tag">{activeLabel}</span>
             </div>
           )}
-          {aiLoading && <div className="response loading">{"\u27f3"} Generating AI analysis\u2026</div>}
-          {aiError   && <div className="response error">{"\u26a0"} {aiError}</div>}
+          {aiLoading && <div className="response loading">{"⟳"} Generating AI analysis…</div>}
+          {aiError   && <div className="response error">{"⚠"} {aiError}</div>}
           {response  && <div className="response">{response}</div>}
         </div>
       )}
