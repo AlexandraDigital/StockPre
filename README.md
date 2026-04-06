@@ -1,49 +1,35 @@
-# StockPre
+# StockPre 📈
 
-<div align="center">
-  <img src="icon.svg" alt="StockPre" width="120" height="120" />
-  <h3>Smart Stock Market Prediction & Analysis</h3>
-</div>
+![StockPre Icon](icon.svg)
 
----
-
-## 📥 Download App
-
-<div align="center">
-  <a href="#download" style="display: inline-block; padding: 12px 32px; background-color: #1e40af; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
-    📱 Download StockPre
-  </a>
-</div>
+### Download StockPre Now
+[![Download App](https://img.shields.io/badge/Download-App-2563eb?style=for-the-badge&logo=download)](https://b59b45fd.stockpre.pages.dev)
 
 ---
 
-## ✨ Features
+StockPre is a real-time stock market analysis app that provides instant insights into stock performance with beautiful, interactive charts.
 
-- 📊 Real-time stock market analysis
-- 🤖 AI-powered predictions
-- 💹 Portfolio tracking
-- 📈 Advanced charting
-- 🔔 Price alerts
+## Features
 
-## 🚀 Getting Started
+- 📊 Real-time stock data and charts
+- 🎨 Beautiful candlestick and area charts
+- 💡 Instant stock insights and analysis
+- 🔍 Interactive data exploration
+- 📱 Responsive design
 
-### Prerequisites
-- Node.js 16+
-- npm or yarn
+## Getting Started
 
-### Installation
+1. Visit [StockPre](https://b59b45fd.stockpre.pages.dev)
+2. Search for any stock ticker
+3. Analyze trends and make informed decisions
 
-```bash
-git clone https://github.com/AlexandraDigital/StockPre.git
-cd StockPre
-npm install
-npm start
-```
+## Tech Stack
 
-## 📝 License
+- React
+- Vite
+- TailwindCSS
+- Recharts
 
-MIT License - see LICENSE file for details
+## License
 
----
-
-**Made with 💚 for stock market enthusiasts**
+MIT
