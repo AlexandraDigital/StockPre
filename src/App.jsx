@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import InstallButton from "./components/InstallButton";
 
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const APP_CSS = `
@@ -58,6 +59,8 @@ const APP_CSS = `
   .section-toggle { background: none; border: none; color: #00d9ff; font-family: monospace; font-size: 1rem; cursor: pointer; padding: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left; }
   .crosshair-info { font-size: 0.75rem; color: #b8ccd8; text-align: right; min-height: 1.1em; margin-bottom: 0.3rem; font-family: monospace; }
   .chart-vol-label { font-size: 0.65rem; fill: #3a5a6a; font-family: monospace; }
+  .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem; }
+  .app-title-group { flex: 1; }
 `;
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -532,8 +535,13 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>{"📈"} Stock AI Dashboard</h1>
-      <p className="subtitle">Real-time prices · Candlestick charts · AI-powered analysis · Auto-refresh every 30s</p>
+      <div className="app-header">
+        <div className="app-title-group">
+          <h1>{"📈"} Stock AI Dashboard</h1>
+          <p className="subtitle">Real-time prices · Candlestick charts · AI-powered analysis · Auto-refresh every 30s</p>
+        </div>
+        <InstallButton />
+      </div>
 
       <div className="card">
         <form onSubmit={handleAnalyze}>
