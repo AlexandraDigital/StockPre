@@ -1,58 +1,49 @@
 # StockPre
 
 <div align="center">
-  <img src="icon.svg" alt="StockPre Icon" width="120" height="120" />
+  <img src="icon.svg" alt="StockPre" width="120" height="120" />
   <h3>Smart Stock Market Prediction & Analysis</h3>
-  <p><strong>Predict. Analyze. Profit.</strong></p>
 </div>
 
 ---
 
-## 🚀 Get Started
+## 📥 Download App
 
 <div align="center">
-  <a href="#download">
-    <button style="background: linear-gradient(135deg, #00D9FF 0%, #0099FF 100%); color: white; padding: 12px 40px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">
-      📥 Download App
-    </button>
+  <a href="#download" style="display: inline-block; padding: 12px 32px; background-color: #1e40af; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+    📱 Download StockPre
   </a>
 </div>
 
 ---
 
-## Features
+## ✨ Features
 
-- 📊 Real-time stock data analysis
+- 📊 Real-time stock market analysis
 - 🤖 AI-powered predictions
-- 📈 Interactive charts and insights
-- 💡 Smart alerts and notifications
-- 🔐 Secure portfolio tracking
+- 💹 Portfolio tracking
+- 📈 Advanced charting
+- 🔔 Price alerts
 
-## Installation
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+
+### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/AlexandraDigital/StockPre.git
-
-# Navigate to the project
 cd StockPre
-
-# Install dependencies
 npm install
-
-# Start the app
 npm start
 ```
 
-## Download
+## 📝 License
 
-**Available on:**
-- 📱 iOS App Store
-- 🤖 Google Play Store
-- 💻 Web Application
+MIT License - see LICENSE file for details
 
 ---
 
-## License
-
-MIT License © 2026 StockPre
+**Made with 💚 for stock market enthusiasts**
